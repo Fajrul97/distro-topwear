@@ -9,6 +9,7 @@ import com.f13.distrotopwear.model.entity.Product;
 import com.f13.distrotopwear.repository.CategoryRepository;
 import com.f13.distrotopwear.repository.ColorRepository;
 import com.f13.distrotopwear.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,16 +20,14 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/product")
+@RequiredArgsConstructor
 public class ProductController {
 
-  @Autowired
-  private ProductRepository productRepository;
+  private final ProductRepository productRepository;
 
-  @Autowired
-  private ColorRepository colorRepository;
+  private final ColorRepository colorRepository;
 
-  @Autowired
-  private CategoryRepository categoryRepository;
+  private final CategoryRepository categoryRepository;
 
   @GetMapping("/all")
   public DefaultResponse getAllProduct(){
@@ -78,6 +77,39 @@ public class ProductController {
       response.setData(convertEntitytoDto(productRepository.save(product)));
     }
     return response;
+  }
+
+  @DeleteMapping("/delete")
+  public DefaultResponse deleteByProductId(@RequestParam String productId) {
+    DefaultResponse df = new DefaultResponse();
+    Optional<Product> optionalProduct = productRepository.findByProductId(productId);
+    if (optionalProduct.isPresent()) {
+      productRepository.delete(optionalProduct.get());
+      df.setStatus(Boolean.TRUE);
+      df.setMessage("Data Berhasil Dihapus");
+      df.setData(optionalProduct.get());
+    } else {
+      df.setStatus(Boolean.FALSE);
+      df.setMessage("Data Tidak Ditemukan");
+    }
+    return df;
+  }
+
+  @PutMapping("/update")
+  public DefaultResponse updateByProductId(@RequestBody ProductDto productDto) {
+    DefaultResponse df = new DefaultResponse();
+    Optional<Product> optionalProduct = productRepository.findByProductId(productDto.getProductId());
+    Product product = optionalProduct.get();
+    if (optionalProduct.isPresent()) {
+      productDto.setId(product.getId());
+      df.setStatus(Boolean.TRUE);
+      df.setData(convertEntitytoDto(productRepository.save(convertDtotoEntity(productDto))));
+      df.setMessage("Perubahan Berhasil Tersimpan");
+    } else {
+      df.setStatus(Boolean.FALSE);
+      df.setMessage("ID Tidak Ditemukan");
+    }
+    return df;
   }
 
   public ProductDto convertEntitytoDto(Product entity) {
