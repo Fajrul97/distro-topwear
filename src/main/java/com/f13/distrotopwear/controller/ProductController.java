@@ -103,7 +103,7 @@ public class ProductController {
     if (optionalProduct.isPresent()) {
       productDto.setId(product.getId());
       df.setStatus(Boolean.TRUE);
-      df.setData(convertEntitytoDto(productRepository.save(convertDtotoEntity(productDto))));
+      df.setData(convertEntitytoDtoUpdate(productRepository.save(convertDtotoEntity(productDto))));
       df.setMessage("Perubahan Berhasil Tersimpan");
     } else {
       df.setStatus(Boolean.FALSE);
@@ -115,6 +115,19 @@ public class ProductController {
   public ProductDto convertEntitytoDto(Product entity) {
     ProductDto dto = new ProductDto();
     BeanUtils.copyProperties(entity, dto);
+    dto.setColorId(entity.getColor().getColorId());
+    dto.setColorName(entity.getColor().getColorName());
+    dto.setCategoryId(entity.getCategory().getCategoryId());
+    dto.setCategoryName(entity.getCategory().getCategoryName());
+
+    return dto;
+  }
+
+  public ProductDto convertEntitytoDtoUpdate(Product entity) {
+    ProductDto dto = new ProductDto();
+    dto.setProductId(entity.getProductId());
+    dto.setProductName(entity.getProductName());
+    dto.setPrice(entity.getPrice());
     dto.setColorId(entity.getColor().getColorId());
     dto.setColorName(entity.getColor().getColorName());
     dto.setCategoryId(entity.getCategory().getCategoryId());
