@@ -55,17 +55,50 @@ public class ColorController {
   @PostMapping("/save")
   public DefaultResponse<ColorDto> saveColor(@RequestBody ColorDto colorDto) {
     Color color = convertDtotoEntity(colorDto);
-    DefaultResponse<ColorDto> response = new DefaultResponse<>();
+    DefaultResponse<ColorDto> df = new DefaultResponse<>();
     Optional<Color> optionalColor = colorRepository.findByColorId(colorDto.getColorId());
     if (optionalColor.isPresent()) {
-      response.setStatus(Boolean.FALSE);
-      response.setMessage("Gagal Menyimpan, Warna Telah Tersedia");
+      df.setStatus(Boolean.FALSE);
+      df.setMessage("Gagal Menyimpan, Warna Telah Tersedia");
     } else {
-      response.setStatus(Boolean.TRUE);
-      response.setMessage("Warna Berhasil Disimpan");
-      response.setData(convertEntitytoDto(colorRepository.save(color)));
+      df.setStatus(Boolean.TRUE);
+      df.setMessage("Warna Berhasil Disimpan");
+      df.setData(convertEntitytoDto(colorRepository.save(color)));
     }
-    return response;
+    return df;
+  }
+
+  @DeleteMapping("/delete")
+  public DefaultResponse deleteByColorId(@RequestParam String colorId) {
+    DefaultResponse df = new DefaultResponse();
+    Optional<Color> optionalColor = colorRepository.findByColorId(colorId);
+    if (optionalColor.isPresent()) {
+      colorRepository.delete(optionalColor.get());
+      df.setStatus(Boolean.TRUE);
+      df.setMessage("Warna Berhasil Dihapus");
+      df.setData(optionalColor.get());
+    } else {
+      df.setStatus(Boolean.FALSE);
+      df.setMessage("Warna Tidak Ditemukan");
+    }
+    return df;
+  }
+
+  @PutMapping("/update")
+  public DefaultResponse updateByColorId(@RequestBody ColorDto colorDto) {
+    DefaultResponse df = new DefaultResponse();
+    Optional<Color> optionalColor = colorRepository.findByColorId(colorDto.getColorId());
+    Color color = optionalColor.get();
+    if (optionalColor.isPresent()) {
+      colorDto.setColorId(color.getColorId());
+      df.setStatus(Boolean.TRUE);
+      df.setData(convertEntitytoDto(colorRepository.save(convertDtotoEntity(colorDto))));
+      df.setMessage("Perubahan Berhasil Tersimpan");
+    } else {
+      df.setStatus(Boolean.FALSE);
+      df.setMessage("Warna Tidak Ditemukan");
+    }
+    return df;
   }
 
   public ColorDto convertEntitytoDto(Color entity) {

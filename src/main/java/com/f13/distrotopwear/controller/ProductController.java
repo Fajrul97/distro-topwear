@@ -66,17 +66,17 @@ public class ProductController {
   @PostMapping("/save")
   public DefaultResponse<ProductDto> saveProduct(@RequestBody ProductDto productDto) {
     Product product = convertDtotoEntity(productDto);
-    DefaultResponse<ProductDto> response = new DefaultResponse<>();
+    DefaultResponse<ProductDto> df = new DefaultResponse<>();
     Optional<Product> optionalProduct = productRepository.findByProductId(productDto.getProductId());
     if (optionalProduct.isPresent()) {
-      response.setStatus(Boolean.FALSE);
-      response.setMessage("Gagal Menyimpan, Produk Telah Tersedia");
+      df.setStatus(Boolean.FALSE);
+      df.setMessage("Gagal Menyimpan, Produk Telah Tersedia");
     } else {
-      response.setStatus(Boolean.TRUE);
-      response.setMessage("Produk Berhasil Disimpan");
-      response.setData(convertEntitytoDto(productRepository.save(product)));
+      df.setStatus(Boolean.TRUE);
+      df.setMessage("Produk Berhasil Disimpan");
+      df.setData(convertEntitytoDto(productRepository.save(product)));
     }
-    return response;
+    return df;
   }
 
   @DeleteMapping("/delete")

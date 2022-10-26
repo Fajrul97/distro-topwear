@@ -55,17 +55,50 @@ public class CategoryController {
   @PostMapping("/save")
   public DefaultResponse<CategoryDto> saveCategory(@RequestBody CategoryDto categoryDto) {
     Category category = convertDtotoEntity(categoryDto);
-    DefaultResponse<CategoryDto> response = new DefaultResponse<>();
+    DefaultResponse<CategoryDto> df = new DefaultResponse<>();
     Optional<Category> optionalCategory = categoryRepository.findByCategoryId(categoryDto.getCategoryId());
     if (optionalCategory.isPresent()) {
-      response.setStatus(Boolean.FALSE);
-      response.setMessage("Gagal Menyimpan, Kategori Telah Tersedia");
+      df.setStatus(Boolean.FALSE);
+      df.setMessage("Gagal Menyimpan, Kategori Telah Tersedia");
     } else {
-      response.setStatus(Boolean.TRUE);
-      response.setMessage("Kategori Berhasil Disimpan");
-      response.setData(convertEntitytoDto(categoryRepository.save(category)));
+      df.setStatus(Boolean.TRUE);
+      df.setMessage("Kategori Berhasil Disimpan");
+      df.setData(convertEntitytoDto(categoryRepository.save(category)));
     }
-    return response;
+    return df;
+  }
+
+  @DeleteMapping("/delete")
+  public DefaultResponse deleteByCategoryId(@RequestParam String categoryId) {
+    DefaultResponse df = new DefaultResponse();
+    Optional<Category> optionalCategory = categoryRepository.findByCategoryId(categoryId);
+    if (optionalCategory.isPresent()) {
+      categoryRepository.delete(optionalCategory.get());
+      df.setStatus(Boolean.TRUE);
+      df.setMessage("Kategori Berhasil Dihapus");
+      df.setData(optionalCategory.get());
+    } else {
+      df.setStatus(Boolean.FALSE);
+      df.setMessage("Kategori Tidak Ditemukan");
+    }
+    return df;
+  }
+
+  @PutMapping("/update")
+  public DefaultResponse updateByCategoryId(@RequestBody CategoryDto categoryDto) {
+    DefaultResponse df = new DefaultResponse();
+    Optional<Category> optionalCategory = categoryRepository.findByCategoryId(categoryDto.getCategoryId());
+    Category category = optionalCategory.get();
+    if (optionalCategory.isPresent()) {
+      categoryDto.setCategoryId(category.getCategoryId());
+      df.setStatus(Boolean.TRUE);
+      df.setData(convertEntitytoDto(categoryRepository.save(convertDtotoEntity(categoryDto))));
+      df.setMessage("Perubahan Berhasil Tersimpan");
+    } else {
+      df.setStatus(Boolean.FALSE);
+      df.setMessage("Kategori Tidak Ditemukan");
+    }
+    return df;
   }
 
   public CategoryDto convertEntitytoDto(Category entity) {
