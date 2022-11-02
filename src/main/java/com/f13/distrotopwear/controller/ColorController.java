@@ -19,7 +19,7 @@ public class ColorController {
   @Autowired
   private ColorRepository colorRepository;
 
-  @GetMapping("/all")
+  @GetMapping
   public DefaultResponse getAllColor(){
     DefaultResponse df = new DefaultResponse();
     List<ColorDto> list;
@@ -52,7 +52,7 @@ public class ColorController {
     return df;
   }
 
-  @PostMapping("/save")
+  @PostMapping
   public DefaultResponse<ColorDto> saveColor(@RequestBody ColorDto colorDto) {
     Color color = convertDtotoEntity(colorDto);
     DefaultResponse<ColorDto> df = new DefaultResponse<>();
@@ -68,7 +68,7 @@ public class ColorController {
     return df;
   }
 
-  @DeleteMapping("/delete")
+  @DeleteMapping
   public DefaultResponse deleteByColorId(@RequestParam String colorId) {
     DefaultResponse df = new DefaultResponse();
     Optional<Color> optionalColor = colorRepository.findByColorId(colorId);
@@ -84,7 +84,7 @@ public class ColorController {
     return df;
   }
 
-  @PutMapping("/update")
+  @PutMapping
   public DefaultResponse updateByColorId(@RequestBody ColorDto colorDto) {
     DefaultResponse df = new DefaultResponse();
     Optional<Color> optionalColor = colorRepository.findByColorId(colorDto.getColorId());

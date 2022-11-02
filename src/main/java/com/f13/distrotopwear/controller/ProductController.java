@@ -29,7 +29,7 @@ public class ProductController {
 
   private final CategoryRepository categoryRepository;
 
-  @GetMapping("/all")
+  @GetMapping
   public DefaultResponse getAllProduct(){
     DefaultResponse df = new DefaultResponse();
     List<ProductDto> list;
@@ -63,7 +63,7 @@ public class ProductController {
     return df;
   }
 
-  @PostMapping("/save")
+  @PostMapping
   public DefaultResponse<ProductDto> saveProduct(@RequestBody ProductDto productDto) {
     Product product = convertDtotoEntity(productDto);
     DefaultResponse<ProductDto> df = new DefaultResponse<>();
@@ -79,7 +79,7 @@ public class ProductController {
     return df;
   }
 
-  @DeleteMapping("/delete")
+  @DeleteMapping
   public DefaultResponse deleteByProductId(@RequestParam String productId) {
     DefaultResponse df = new DefaultResponse();
     Optional<Product> optionalProduct = productRepository.findByProductId(productId);
@@ -95,7 +95,7 @@ public class ProductController {
     return df;
   }
 
-  @PutMapping("/update")
+  @PutMapping
   public DefaultResponse updateByProductId(@RequestBody ProductDto productDto) {
     DefaultResponse df = new DefaultResponse();
     Optional<Product> optionalProduct = productRepository.findByProductId(productDto.getProductId());

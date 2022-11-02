@@ -19,7 +19,8 @@ public class CategoryController {
   @Autowired
   private CategoryRepository categoryRepository;
 
-  @GetMapping("/all")
+  /*@GetMapping("/all")*/
+  @GetMapping
   public DefaultResponse getAllCategory(){
     DefaultResponse df = new DefaultResponse();
     List<CategoryDto> list;
@@ -52,7 +53,8 @@ public class CategoryController {
     return df;
   }
 
-  @PostMapping("/save")
+  /*@PostMapping("/save")*/
+  @PostMapping
   public DefaultResponse<CategoryDto> saveCategory(@RequestBody CategoryDto categoryDto) {
     Category category = convertDtotoEntity(categoryDto);
     DefaultResponse<CategoryDto> df = new DefaultResponse<>();
@@ -68,7 +70,8 @@ public class CategoryController {
     return df;
   }
 
-  @DeleteMapping("/delete")
+  /*@DeleteMapping("/delete")*/
+  @DeleteMapping
   public DefaultResponse deleteByCategoryId(@RequestParam String categoryId) {
     DefaultResponse df = new DefaultResponse();
     Optional<Category> optionalCategory = categoryRepository.findByCategoryId(categoryId);
@@ -84,7 +87,8 @@ public class CategoryController {
     return df;
   }
 
-  @PutMapping("/update")
+  /*@PutMapping("/update")*/
+  @PutMapping
   public DefaultResponse updateByCategoryId(@RequestBody CategoryDto categoryDto) {
     DefaultResponse df = new DefaultResponse();
     Optional<Category> optionalCategory = categoryRepository.findByCategoryId(categoryDto.getCategoryId());
